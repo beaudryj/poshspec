@@ -1,4 +1,6 @@
-﻿Describe 'Services' {    
+﻿#Requires -Module Poshspec
+
+Describe 'Services' {    
     Service w32time Status { Should Be Running }
     Service bits Status { Should Be Stopped }
 }
@@ -30,6 +32,7 @@ Describe 'CimObject' {
     CimObject root/StandardCimv2/MSFT_NetOffloadGlobalSetting ReceiveSideScaling { Should Be Enabled }
 }
 
+<<<<<<< HEAD
 Describe 'WebSite' {
    WebSiteBinding TestSite http protocol { Should be "http" }
    WebSiteBinding TestSite http bindingInformation { Should match '80' }
@@ -57,5 +60,18 @@ Describe 'PhysicalDisk' {
    PhysicalDisk physicalDisk0 HealthStatus { Should be 'Healthy' }
    PhysicalDisk physicalDisk0 OperationalStatus { Should be 'OK' }
    PhysicalDisk physicalDisk0 Size { begreaterthan 1073741824 }
+=======
+
+Describe 'Firewall' {
+   Firewall putty.exe Enabled { Should be "$True" }
+   Firewall putty.exe Action { Should be 'Allow' }
+   Firewall putty.exe Profile { Should be 'Private' }
+}
+
+Describe 'Volume' {
+    Volume C DriveType { should be 'fixed' }
+    Volume C FileSystem { should be 'NTFS' }
+    Volume 'ShouldNotExist' { should BeNullOrEmpty}
+>>>>>>> upstream/master
 }
 

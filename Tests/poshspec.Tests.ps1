@@ -125,7 +125,7 @@ Describe 'Test Functions' {
             }
 
             It "Should return the correct test Expression" {
-                $results.Expression | Should Be "Invoke-WebRequest -Uri 'http://localhost' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty 'StatusCode' | Should Be 200"
+                $results.Expression | Should Be "Invoke-WebRequest -Uri 'http://localhost' -UseBasicParsing -ErrorAction SilentlyContinue | Select-Object -ExpandProperty 'StatusCode' | Should Be 200"
             }            
         }
         
@@ -189,10 +189,10 @@ Describe 'Test Functions' {
             }
             
             It 'Should return a correct text expression' {
-                $results.Expression | Should Be "Get-Package -Name 'Microsoft Visual Studio Code' -ErrorAction SilentlyContinue | Should Not BeNullOrEmpty"
+                $results.Expression | Should Be 'Get-Package -Name "Microsoft Visual Studio Code" -ErrorAction SilentlyContinue | Select-Object -First 1 | Should Not BeNullOrEmpty'
             }
         }
-        
+       
         Context 'Package w/ properties' {
             
             $results = Package 'Microsoft Visual Studio Code' version { Should be '1.1.0' }
@@ -202,7 +202,20 @@ Describe 'Test Functions' {
             }
             
             It 'Should return a correct text expression' {
-                $results.Expression | Should Be "Get-Package -Name 'Microsoft Visual Studio Code' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty 'version' | Should be '1.1.0'"
+                $results.Expression | Should Be "Get-Package -Name ""Microsoft Visual Studio Code"" -ErrorAction SilentlyContinue | Select-Object -First 1 | Select-Object -ExpandProperty 'version' | Should be '1.1.0'"
+            }
+        }
+
+        Context 'Package w/Single Quotes' {
+            
+            $results = Package "Name 'subname'" { Should Not BeNullOrEmpty }
+            
+            It 'Should return a correct test name' {
+                $results.Name | Should Be "Package 'Name 'subname'' Should Not BeNullOrEmpty"
+            }
+            
+            It 'Should return a correct text expression' {
+                $results.Expression | Should Be "Get-Package -Name ""Name 'subname'"" -ErrorAction SilentlyContinue | Select-Object -First 1 | Should Not BeNullOrEmpty"
             }
         }
         
@@ -313,6 +326,7 @@ Describe 'Test Functions' {
                 $results.Expression | Should Be "Test-Path -Path `"IIS:\AppPools\TestSite`" -ErrorAction SilentlyContinue | Should be `$true"
             }
         }
+<<<<<<< HEAD
 
         Context 'WebSiteState' {
             $results = WebSiteState TestSite { Should be 'Started'}
@@ -326,6 +340,8 @@ Describe 'Test Functions' {
             }
         }
                       
+=======
+>>>>>>> upstream/master
                       
         Context 'Firewall' {
             $results =    Firewall putty.exe Action { Should be 'Allow' }
@@ -365,6 +381,7 @@ Describe 'Test Functions' {
                 $results.Expression | Should Be "Get-ItemProperty -Path hklm:\\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object DisplayName -Match 'Microsoft .NET Framework 4.6.1' | Select-Object -ExpandProperty 'DisplayVersion' | Should Be 4.6.01055"
             }
         }
+<<<<<<< HEAD
         
         Context 'Volume' {
             
@@ -389,6 +406,68 @@ Describe 'Test Functions' {
 
             It "Should return the correct test Expression" {
                 $results.Expression | Should Be "Get-PhysicalDisk -FriendlyName 'physicaldisk0' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty 'HealthStatus' | Should Be 'Healthy'"
+=======
+
+        Context 'Volume' {
+
+            $results = Volume 'C' DriveType { Should Be 'Fixed' }
+
+            It "Should return the correct test Name" {
+                $results.Name | Should Be "Volume property 'DriveType' for 'C' Should Be 'Fixed'"
+            }
+
+            It "Should return the correct test Expression" {
+                $results.Expression | Should Be "GetVolume -Name 'C' | Select-Object -ExpandProperty 'DriveType' | Should Be 'Fixed'"
+            }
+        }
+
+        Context 'AuditPolicy' {
+
+            $results = AuditPolicy System 'Security System Extension' { Should Be 'Success' }
+
+            It "Should return the correct test Name" {
+                $results.Name | Should Be "AuditPolicy 'Security System Extension' Should Be 'Success'"
+            } 
+            It "Should return the correct test Expression" {
+                $results.Expression | Should Be "GetAuditPolicy -Category 'System' -Subcategory 'Security System Extension' | Should Be 'Success'"
+            }
+        }
+
+        Context 'LocalUser' {
+
+            $results = LocalUser Guest Disabled { Should Be $True }
+
+            It "Should return the correct test Name" {
+                $results.Name | Should Be "LocalUser property 'Disabled' for 'Guest' Should Be `$True"
+            } 
+            It "Should return the correct test Expression" {
+                $results.Expression | Should Be "Get-CimInstance -ClassName Win32_UserAccount -filter `"LocalAccount=True AND Name='Guest'`" | Select-Object -ExpandProperty 'Disabled' | Should Be `$True"
+            }
+        }
+
+        Context 'UserRightsAssignment' {
+            Mock Test-RunAsAdmin { return $true }
+            $results = UserRightsAssignment ByRight 'SeNetworkLogonRight' { Should Be @("BUILTIN\Users","BUILTIN\Administrators") }
+
+            It "Should return the correct test Name" {
+                $results.Name | Should Be "UserRightsAssignment 'SeNetworkLogonRight' Should Be @(`"BUILTIN\Users`",`"BUILTIN\Administrators`")"
+            } 
+            It "Should return the correct test Expression" {
+                $results.Expression | Should Be "Get-AccountsWithUserRight -Right 'SeNetworkLogonRight' | Select-Object -ExpandProperty Account | Should Be @(`"BUILTIN\Users`",`"BUILTIN\Administrators`")"
+            }
+        }
+
+        Context 'ServerFeature' {
+
+            $results = ServerFeature 'Telnet-Client' 'Installed' { Should Be $false }
+
+            It "Should return the correct test Name" {
+                $results.Name | Should Be "ServerFeature property 'Installed' for 'Telnet-Client' Should Be `$false"
+            }
+
+            It "Should return the correct test Expression" {
+                $results.Expression | Should Be "GetFeature -Name Telnet-Client | Select-Object -ExpandProperty 'Installed' | Should be `$false"
+>>>>>>> upstream/master
             }
         }
     }

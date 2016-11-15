@@ -1,9 +1,22 @@
+<<<<<<< HEAD
 # Version 2.1.1
 * Added Functions for 
   * Firewall
   * WebsiteState
   * PhysicalDisk
   * Volume
+=======
+# Version 2.1.14
+* Improved handling of single quotes  in Package function
+* Added Functions for
+  * LocalUser 
+  * AuditPolicy
+  * Volume
+
+# Version 2.1.6
+* Added Functions for 
+  * Firewall
+>>>>>>> upstream/master
 
 # Version 2.1.0
 * Broke Down PSM1 to Many Different Functions in their own files [No change in functionality]
